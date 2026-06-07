@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Joao Victor Morais | Portfólio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,600;1,700&family=Playfair+Display:wght@600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <canvas id="scene" aria-hidden="true"></canvas>
+    <main class="shell">
+      <header class="site-header">
+        <a class="brand" href="mailto:joaovictormorais2101@gmail.com" aria-label="Enviar email para Joao Victor Morais">
+          <span class="mail-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 6.5h16v11H4z" />
+              <path d="m4.8 7.2 7.2 5.5 7.2-5.5" />
+            </svg>
+          </span>
+          <span>joaovictormorais2101@gmail.com</span>
+        </a>
+
+        <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="primary-navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="nav-links" id="primary-navigation" aria-label="Navegação principal">
+          <a href="#works">Projetos</a>
+          <a href="#resume">Resumo</a>
+          <a href="#technologies">Tecnologias</a>
+          <a href="#contact">Contato</a>
+        </nav>
+      </header>
+
+      <section class="hero section" id="top">
+        <div class="avatar-wrap" aria-hidden="true">
+          <div class="avatar">
+            <img src="assets/images/joao-victor-photo.jpg" alt="" onerror="this.remove()" />
+            <span>JV</span>
+          </div>
+        </div>
+
+        <p class="eyebrow">Oi, eu sou Joao Victor Morais</p>
+        <h1>Construindo produtos<br />digitais, marcas<br />e experiências.</h1>
+        <p class="intro">
+          Desenvolvedor web em evolução, formado em Informática para Internet pelo SENAI,
+          estudando Node.js, APIs REST, JWT e interfaces modernas.
+        </p>
+        <a class="primary-button" href="#contact">Fale comigo</a>
+      </section>
+
+      <section class="ticker" aria-label="Competências">
+        <div class="ticker-track">
+          <span>Design de Interface</span>
+          <span>Desenvolvimento Visual</span>
+          <span>Web Responsivo</span>
+          <span>Node.js</span>
+          <span>REST APIs</span>
+          <span>JWT</span>
+          <span>Animações com GSAP</span>
+          <span>Código Criativo</span>
+          <span>Design de Interface</span>
+          <span>Desenvolvimento Visual</span>
+          <span>Web Responsivo</span>
+          <span>Node.js</span>
+          <span>REST APIs</span>
+          <span>JWT</span>
+          <span>Animações com GSAP</span>
+          <span>Código Criativo</span>
+        </div>
+
+      </section>
+
+      <section class="section works-section" id="works">
+        <canvas id="projects-scene" aria-hidden="true"></canvas>
+        <div class="section-heading">
+          <p class="section-kicker">Meus projetos</p>
+          <h2>Projetos com prévias, código e links diretos.</h2>
+        </div>
+
+        <div class="work-showcase" aria-roledescription="carrossel" aria-label="Projetos em destaque">
+          <div class="work-grid">
+          <article class="work-card is-active" data-project-slide>
+            <div class="project-media">
+              <video muted loop playsinline preload="none" poster="assets/images/project-chups.png" aria-label="Vídeo de prévia do projeto Chups">
+                <source src="assets/videos/chups-site.mp4" type="video/mp4" />
+              </video>
+              <div class="project-preview preview-one" aria-hidden="true">
+                <img src="assets/images/project-chups.png" alt="" loading="eager" decoding="async" />
+              </div>
+            </div>
+            <div class="project-content">
+              <span class="work-number">01</span>
+              <h3>Chups Project</h3>
+              <p>Landing page moderna com visual imersivo, navegação rápida, layout responsivo e experiência publicada.</p>
+              <div class="project-actions">
+                <a class="project-button primary-link" href="https://chups-project.vercel.app/" target="_blank" rel="noreferrer">Ver projeto</a>
+                <a class="project-button secondary-link" href="https://github.com/JoaovictormoraisDev" target="_blank" rel="noreferrer">GitHub</a>
+              </div>
+            </div>
+          </article>
+          <article class="work-card featured" data-project-slide>
+            <div class="project-media">
+              <video muted loop playsinline preload="none" poster="assets/images/project-magictoys.png" aria-label="Vídeo de prévia do Magic Toys">
+                <source src="assets/videos/magictoys-site.mp4" type="video/mp4" />
+              </video>
+              <div class="project-preview preview-two" aria-hidden="true">
+                <img src="assets/images/project-magictoys.png" alt="" loading="lazy" decoding="async" />
+              </div>
+            </div>
+            <div class="project-content">
+              <span class="work-number">02</span>
+              <h3>Magic Toys</h3>
+              <p>Experiência de loja com seções animadas, apresentação colorida, interface responsiva e link direto para o projeto.</p>
+              <div class="project-actions">
+                <a class="project-button primary-link" href="https://magictoys-project.vercel.app/" target="_blank" rel="noreferrer">Ver projeto</a>
+                <a class="project-button secondary-link" href="https://github.com/JoaovictormoraisDev" target="_blank" rel="noreferrer">GitHub</a>
+              </div>
+            </div>
+          </article>
+          <article class="work-card" data-project-slide>
+            <div class="project-media">
+              <video muted loop playsinline preload="none" poster="assets/images/project-buscapet.png" aria-label="Vídeo de prévia do BuscaPet Floripa">
+                <source src="assets/videos/buscapet-site.mp4" type="video/mp4" />
+              </video>
+              <div class="project-preview preview-three" aria-hidden="true">
+                <img src="assets/images/project-buscapet.png" alt="" loading="lazy" decoding="async" />
+              </div>
+            </div>
+            <div class="project-content">
+              <span class="work-number">03</span>
+              <h3>BuscaPet Floripa</h3>
+              <p>Aplicação web local para busca de pets, com hierarquia clara, telas responsivas e fluxo focado no usuário.</p>
+              <div class="project-actions">
+                <a class="project-button primary-link" href="https://buscapet-floripa.vercel.app/" target="_blank" rel="noreferrer">Ver projeto</a>
+                <a class="project-button secondary-link" href="https://github.com/JoaovictormoraisDev" target="_blank" rel="noreferrer">GitHub</a>
+              </div>
+            </div>
+          </article>
+          </div>
+
+          <div class="project-controls" aria-label="Controles dos projetos">
+            <button class="project-nav project-prev" type="button" aria-label="Projeto anterior">&larr;</button>
+            <div class="project-progress" aria-hidden="true">
+              <span></span>
+            </div>
+            <button class="project-nav project-next" type="button" aria-label="Próximo projeto">&rarr;</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section split-section technologies-section" id="technologies">
+        <div class="section-heading compact">
+          <p class="section-kicker">Tecnologias</p>
+          <h2>Tecnologias que estudo e aplico nos meus projetos.</h2>
+        </div>
+
+        <div class="tech-list" aria-label="Tecnologias">
+          <article class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" />
+            <span>01</span>
+            <h3>Node.js</h3>
+            <p>Runtime para APIs, rotas e serviços back-end.</p>
+          </article>
+          <article class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" />
+            <span>02</span>
+            <h3>JavaScript</h3>
+            <p>Interações, lógica de interface e animações no navegador.</p>
+          </article>
+          <article class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" />
+            <span>03</span>
+            <h3>HTML</h3>
+            <p>Estrutura semântica para páginas responsivas.</p>
+          </article>
+          <article class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" />
+            <span>04</span>
+            <h3>CSS</h3>
+            <p>Layouts, responsividade e acabamento visual.</p>
+          </article>
+          <article class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL" />
+            <span>05</span>
+            <h3>MySQL</h3>
+            <p>Banco relacional para dados estruturados.</p>
+          </article>
+          <article class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL" />
+            <span>06</span>
+            <h3>PostgreSQL</h3>
+            <p>Banco robusto para consultas e modelagem.</p>
+          </article>
+          <article class="tech-card">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git" />
+            <span>07</span>
+            <h3>Git</h3>
+            <p>Controle de versao para evoluir projetos.</p>
+          </article>
+          <article class="tech-card">
+            <img class="github-mark" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" />
+            <span>08</span>
+            <h3>GitHub</h3>
+            <p>Repositórios, histórico e organização de código.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section resume-section" id="resume">
+        <div class="resume-copy">
+          <p class="section-kicker">Resumo</p>
+          <h2>Desenvolvo interfaces modernas e sistemas web com foco em experiência.</h2>
+          <p class="resume-text">
+            Sou técnico em Informática para Internet pelo SENAI e estudo desenvolvimento web criando projetos responsivos, APIs, telas animadas e experiências digitais com JavaScript, Node.js, bancos de dados e motion com GSAP.
+          </p>
+          <div class="resume-points" aria-label="Áreas de atuação">
+            <span>Front-end responsivo</span>
+            <span>APIs com Node.js</span>
+            <span>Interfaces animadas</span>
+            <span>Projetos publicados</span>
+          </div>
+          <a class="ghost-button" href="#contact">Vamos conversar</a>
+        </div>
+
+        <div class="resume-visual" aria-hidden="true">
+          <canvas id="resume-scene"></canvas>
+          <div class="resume-visual-label">
+            <span>JS</span>
+            <span>Node</span>
+            <span>API</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section contact-section" id="contact">
+        <div class="contact-panel">
+          <p class="section-kicker">Contato</p>
+          <h2>Tem um projeto em mente?</h2>
+          <p class="contact-copy">
+            Me envie uma mensagem pelo formulário ou fale comigo pelos contatos abaixo.
+          </p>
+
+          <div class="contact-details" aria-label="Informações de contato">
+            <a href="tel:+5548988194079">Telefone: (48) 98819-4079</a>
+            <a href="mailto:joaovictormorais2101@gmail.com">Gmail: joaovictormorais2101@gmail.com</a>
+            <a href="https://www.linkedin.com/in/joao-victor-morais-lima-0a28642aa/" target="_blank" rel="noreferrer">LinkedIn: joao-victor-morais-lima</a>
+          </div>
+
+          <form class="contact-form" data-recipient="joaovictormorais2101@gmail.com">
+            <label>
+              <span>Seu email</span>
+              <input type="email" name="email" placeholder="seunome@email.com" required />
+            </label>
+            <label>
+              <span>Mensagem</span>
+              <textarea name="message" rows="4" placeholder="Conte um pouco sobre seu projeto" required></textarea>
+            </label>
+            <button type="submit">Enviar email</button>
+          </form>
+
+          <div class="social-links" aria-label="Social links">
+            <a href="https://github.com/JoaovictormoraisDev" target="_blank" rel="noreferrer" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.61.07-.61 1 .07 1.53 1.04 1.53 1.04.89 1.52 2.33 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03A9.56 9.56 0 0 1 12 6c.85 0 1.7.11 2.5.34 1.9-1.3 2.74-1.03 2.74-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.84-2.34 4.69-4.57 4.93.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
+              </svg>
+            </a>
+            <a href="mailto:joaovictormorais2101@gmail.com" aria-label="Gmail">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2.2v9.3c0 .17.03.33.1.47l4.9-4.37L4.5 7.2Zm15 0-5 5.4 4.9 4.37c.07-.14.1-.3.1-.47V7.2ZM12 13.25 6.3 7h11.4L12 13.25Zm-1.45.96-4.43 3.94h11.76l-4.43-3.94L12 15.8l-1.45-1.59Z" />
+              </svg>
+            </a>
+            <a href="https://www.linkedin.com/in/joao-victor-morais-lima-0a28642aa/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5.35 8.85H2.4V21h2.95V8.85ZM3.88 3a1.72 1.72 0 1 0 0 3.44A1.72 1.72 0 0 0 3.88 3Zm6.5 5.85H7.55V21h2.95v-6.02c0-1.58.3-3.12 2.27-3.12 1.94 0 1.96 1.82 1.96 3.22V21h2.95v-6.68c0-3.28-.7-5.8-4.54-5.8-1.84 0-3.08 1.01-3.59 1.97h-.04l-.13-1.64Z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
