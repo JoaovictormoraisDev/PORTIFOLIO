@@ -13,6 +13,16 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="page-loader" aria-live="polite" aria-label="Carregando portfolio">
+      <div class="loader-inner">
+        <p class="loader-kicker">Portfolio</p>
+        <h1 class="loader-title">Joao Victor Morais</h1>
+        <p class="loader-subtitle">Web Developer</p>
+        <div class="loader-progress" aria-hidden="true">
+          <span></span>
+        </div>
+      </div>
+    </div>
     <canvas id="scene" aria-hidden="true"></canvas>
     <main class="shell">
       <header class="site-header">
@@ -80,7 +90,6 @@
       </section>
 
       <section class="section works-section" id="works">
-        <canvas id="projects-scene" aria-hidden="true"></canvas>
         <div class="section-heading">
           <p class="section-kicker">Meus projetos</p>
           <h2>Projetos com prévias, código e links diretos.</h2>
@@ -89,12 +98,9 @@
         <div class="work-showcase" aria-roledescription="carrossel" aria-label="Projetos em destaque">
           <div class="work-grid">
           <article class="work-card is-active" data-project-slide>
-            <div class="project-media">
-              <video muted loop playsinline preload="none" poster="assets/images/project-chups.png" aria-label="Vídeo de prévia do projeto Chups">
-                <source src="assets/videos/chups-site.mp4" type="video/mp4" />
-              </video>
+            <div class="project-media" style="--project-poster: url('assets/images/project-chups-lite.jpg')">
               <div class="project-preview preview-one" aria-hidden="true">
-                <img src="assets/images/project-chups.png" alt="" loading="eager" decoding="async" />
+                <img src="assets/images/project-chups-lite.jpg" alt="" loading="eager" decoding="async" />
               </div>
             </div>
             <div class="project-content">
@@ -108,12 +114,9 @@
             </div>
           </article>
           <article class="work-card featured" data-project-slide>
-            <div class="project-media">
-              <video muted loop playsinline preload="none" poster="assets/images/project-magictoys.png" aria-label="Vídeo de prévia do Magic Toys">
-                <source src="assets/videos/magictoys-site.mp4" type="video/mp4" />
-              </video>
+            <div class="project-media" style="--project-poster: url('assets/images/project-magictoys-lite.jpg')">
               <div class="project-preview preview-two" aria-hidden="true">
-                <img src="assets/images/project-magictoys.png" alt="" loading="lazy" decoding="async" />
+                <img src="assets/images/project-magictoys-lite.jpg" alt="" loading="lazy" decoding="async" />
               </div>
             </div>
             <div class="project-content">
@@ -127,12 +130,9 @@
             </div>
           </article>
           <article class="work-card" data-project-slide>
-            <div class="project-media">
-              <video muted loop playsinline preload="none" poster="assets/images/project-buscapet.png" aria-label="Vídeo de prévia do BuscaPet Floripa">
-                <source src="assets/videos/buscapet-site.mp4" type="video/mp4" />
-              </video>
+            <div class="project-media" style="--project-poster: url('assets/images/project-buscapet-lite.jpg')">
               <div class="project-preview preview-three" aria-hidden="true">
-                <img src="assets/images/project-buscapet.png" alt="" loading="lazy" decoding="async" />
+                <img src="assets/images/project-buscapet-lite.jpg" alt="" loading="lazy" decoding="async" />
               </div>
             </div>
             <div class="project-content">
@@ -157,60 +157,78 @@
         </div>
       </section>
 
-      <section class="section split-section technologies-section" id="technologies">
+      <section class="section technologies-section" id="technologies">
         <div class="section-heading compact">
           <p class="section-kicker">Tecnologias</p>
           <h2>Tecnologias que estudo e aplico nos meus projetos.</h2>
         </div>
 
         <div class="tech-list" aria-label="Tecnologias">
-          <article class="tech-card">
+          <article class="tech-card" data-stack="Back">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" />
             <span>01</span>
             <h3>Node.js</h3>
-            <p>Runtime para APIs, rotas e serviços back-end.</p>
+            <p>Runtime para serviços back-end e integrações.</p>
           </article>
-          <article class="tech-card">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" />
+          <article class="tech-card" data-stack="Back">
+            <img class="express-mark" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" alt="Express" />
             <span>02</span>
-            <h3>JavaScript</h3>
-            <p>Interações, lógica de interface e animações no navegador.</p>
+            <h3>Express</h3>
+            <p>Rotas, middlewares e estrutura para APIs.</p>
           </article>
-          <article class="tech-card">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" />
+          <article class="tech-card" data-stack="Back">
+            <div class="tech-monogram" aria-hidden="true">JWT</div>
             <span>03</span>
-            <h3>HTML</h3>
-            <p>Estrutura semântica para páginas responsivas.</p>
+            <h3>JWT</h3>
+            <p>Autenticação com tokens e sessões seguras.</p>
           </article>
-          <article class="tech-card">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" />
+          <article class="tech-card" data-stack="Back">
+            <div class="tech-monogram" aria-hidden="true">API</div>
             <span>04</span>
-            <h3>CSS</h3>
-            <p>Layouts, responsividade e acabamento visual.</p>
+            <h3>APIs REST</h3>
+            <p>Endpoints claros para troca de dados.</p>
           </article>
-          <article class="tech-card">
+          <article class="tech-card" data-stack="DB">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL" />
             <span>05</span>
             <h3>MySQL</h3>
             <p>Banco relacional para dados estruturados.</p>
           </article>
-          <article class="tech-card">
+          <article class="tech-card" data-stack="DB">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL" />
             <span>06</span>
             <h3>PostgreSQL</h3>
-            <p>Banco robusto para consultas e modelagem.</p>
+            <p>Consultas, modelagem e persistência robusta.</p>
           </article>
-          <article class="tech-card">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git" />
+          <article class="tech-card" data-stack="DB">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg" alt="Supabase" />
             <span>07</span>
-            <h3>Git</h3>
-            <p>Controle de versao para evoluir projetos.</p>
+            <h3>Supabase</h3>
+            <p>Banco, autenticação e recursos para apps web.</p>
           </article>
-          <article class="tech-card">
-            <img class="github-mark" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" />
+          <article class="tech-card" data-stack="Front">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" />
             <span>08</span>
-            <h3>GitHub</h3>
-            <p>Repositórios, histórico e organização de código.</p>
+            <h3>HTML</h3>
+            <p>Estrutura semântica para páginas responsivas.</p>
+          </article>
+          <article class="tech-card" data-stack="Front">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" />
+            <span>09</span>
+            <h3>CSS</h3>
+            <p>Layouts, responsividade e acabamento visual.</p>
+          </article>
+          <article class="tech-card" data-stack="Front">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" />
+            <span>10</span>
+            <h3>JavaScript</h3>
+            <p>Interações, lógica de interface e animações.</p>
+          </article>
+          <article class="tech-card" data-stack="Front">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS" />
+            <span>11</span>
+            <h3>Tailwind</h3>
+            <p>Utilitários para criar interfaces consistentes.</p>
           </article>
         </div>
       </section>
@@ -231,14 +249,31 @@
           <a class="ghost-button" href="#contact">Vamos conversar</a>
         </div>
 
-        <div class="resume-visual" aria-hidden="true">
-          <canvas id="resume-scene"></canvas>
-          <div class="resume-visual-label">
-            <span>JS</span>
-            <span>Node</span>
-            <span>API</span>
+        <aside class="resume-panel" aria-label="Destaques do resumo">
+          <div class="resume-panel-header">
+            <span>Disponível para projetos</span>
+            <strong>Web Developer</strong>
           </div>
-        </div>
+
+          <div class="resume-stats">
+            <article>
+              <strong>Front</strong>
+              <span>Interfaces responsivas, acessíveis e com acabamento visual.</span>
+            </article>
+            <article>
+              <strong>Back</strong>
+              <span>APIs REST, autenticação JWT e integração com bancos de dados.</span>
+            </article>
+            <article>
+              <strong>Deploy</strong>
+              <span>Projetos publicados, versionados e prontos para evoluir.</span>
+            </article>
+          </div>
+
+          <p class="resume-note">
+            Gosto de transformar ideias em telas claras, rápidas e bem organizadas, unindo estrutura técnica com uma experiência visual que parece cuidada desde o primeiro clique.
+          </p>
+        </aside>
       </section>
 
       <section class="section contact-section" id="contact">

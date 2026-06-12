@@ -1,6 +1,8 @@
 let activeLenis = null;
 let activeGsap = null;
 
+document.body.classList.add("is-loading");
+
 if ("scrollRestoration" in window.history) {
   window.history.scrollRestoration = "manual";
 }
@@ -41,13 +43,13 @@ async function loadMotion() {
     activeGsap = gsap;
     initLenis(Lenis, gsap, ScrollTrigger);
     initThree(THREE);
-    initResumeScene(THREE, gsap);
     initGsap(gsap, ScrollTrigger);
     initButtonEffects(gsap);
     initProjectShowcase(gsap);
     initTechCards(gsap);
     initTickerCarousel(gsap);
     document.documentElement.classList.add("motion-ready");
+    initLoader(gsap);
 
     requestAnimationFrame(() => {
       const initialTarget = window.location.hash && document.querySelector(window.location.hash);
@@ -65,8 +67,104 @@ async function loadMotion() {
     });
   } catch (error) {
     document.documentElement.classList.add("motion-fallback");
+    hideLoaderFallback();
     initCssFallback();
   }
+}
+
+function initLoader(gsap) {
+  const loader = document.querySelector(".page-loader");
+
+  if (!loader) {
+    document.body.classList.remove("is-loading");
+    return;
+  }
+
+  const titleLetters = splitLoaderText(loader.querySelector(".loader-title"));
+  const subtitleLetters = splitLoaderText(loader.querySelector(".loader-subtitle"));
+  const kicker = loader.querySelector(".loader-kicker");
+  const progress = loader.querySelector(".loader-progress span");
+
+  gsap.set([...titleLetters, ...subtitleLetters], {
+    autoAlpha: 0,
+    yPercent: 120,
+    rotateX: -42,
+  });
+  gsap.set(kicker, { autoAlpha: 0, y: 12 });
+
+  const timeline = gsap.timeline({
+    defaults: { ease: "power3.out" },
+    onComplete: () => {
+      loader.hidden = true;
+      document.body.classList.remove("is-loading");
+    },
+  });
+
+  timeline
+    .to(kicker, { autoAlpha: 1, y: 0, duration: 0.42 })
+    .to(titleLetters, {
+      autoAlpha: 1,
+      yPercent: 0,
+      rotateX: 0,
+      duration: 0.72,
+      stagger: 0.025,
+    }, "-=0.12")
+    .to(subtitleLetters, {
+      autoAlpha: 1,
+      yPercent: 0,
+      rotateX: 0,
+      duration: 0.54,
+      stagger: 0.025,
+    }, "-=0.34")
+    .to(progress, {
+      scaleX: 1,
+      duration: 0.9,
+      ease: "power2.inOut",
+    }, "-=0.38")
+    .to(loader, {
+      autoAlpha: 0,
+      duration: 0.6,
+      ease: "power2.inOut",
+    }, "+=0.1");
+}
+
+function hideLoaderFallback() {
+  const loader = document.querySelector(".page-loader");
+
+  setTimeout(() => {
+    if (loader) {
+      loader.hidden = true;
+    }
+
+    document.body.classList.remove("is-loading");
+  }, 900);
+}
+
+function splitLoaderText(element) {
+  if (!element || element.dataset.loaderSplit === "true") {
+    return [];
+  }
+
+  const text = element.textContent.trim();
+  const fragment = document.createDocumentFragment();
+
+  Array.from(text).forEach((character) => {
+    if (character === " ") {
+      fragment.appendChild(document.createTextNode(" "));
+      return;
+    }
+
+    const letter = document.createElement("span");
+    letter.className = "text-reveal-letter";
+    letter.textContent = character;
+    fragment.appendChild(letter);
+  });
+
+  element.textContent = "";
+  element.appendChild(fragment);
+  element.dataset.loaderSplit = "true";
+
+  return element.querySelectorAll(".text-reveal-letter");
 }
 
 function initLenis(Lenis, gsap, ScrollTrigger) {
@@ -181,6 +279,7 @@ function initGsap(gsap, ScrollTrigger) {
     );
   });
 
+  initTextReveal(gsap, ScrollTrigger);
   initTechReveal(gsap, ScrollTrigger);
 
   setTimeout(() => {
@@ -219,15 +318,134 @@ function initTechReveal(gsap, ScrollTrigger) {
         overwrite: "auto",
       });
     },
-    onLeaveBack: (batch) => {
-      gsap.set(batch, {
-        autoAlpha: 0,
-        y: 54,
-        scale: 0.96,
-        overwrite: "auto",
-      });
-    },
   });
+}
+
+function initTextReveal(gsap, ScrollTrigger) {
+  const wordSelector = [
+    ".hero .eyebrow",
+    ".hero h1",
+    ".section-heading h2",
+    ".work-card h3",
+    ".resume-copy h2",
+    ".contact-panel h2",
+  ].join(", ");
+
+  const letterSelector = [
+    ".brand span:last-child",
+    ".nav-links a",
+    ".hero .intro",
+    ".primary-button",
+    ".section-kicker",
+    ".work-card p",
+    ".project-button",
+    ".resume-points > span",
+    ".resume-stats strong",
+    ".resume-stats span",
+    ".resume-note",
+    ".ghost-button",
+    ".contact-copy",
+    ".contact-details a",
+    ".contact-form label span",
+    ".contact-form button",
+  ].join(", ");
+
+  gsap.utils.toArray(wordSelector).forEach((element) => {
+    animateTextReveal(gsap, ScrollTrigger, element, "word");
+  });
+
+  gsap.utils.toArray(letterSelector).forEach((element) => {
+    const mode = element.textContent.trim().length > 110 ? "word" : "letter";
+    animateTextReveal(gsap, ScrollTrigger, element, mode);
+  });
+}
+
+function animateTextReveal(gsap, ScrollTrigger, element, mode) {
+  if (element.dataset.textRevealReady === "true" || !element.textContent.trim()) {
+    return;
+  }
+
+  const originalText = element.textContent.replace(/\s+/g, " ").trim();
+  const fragment = document.createDocumentFragment();
+
+  Array.from(element.childNodes).forEach((node) => {
+    if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "BR") {
+      fragment.appendChild(document.createElement("br"));
+      return;
+    }
+
+    if (node.nodeType !== Node.TEXT_NODE) {
+      return;
+    }
+
+    node.textContent.split(/(\s+)/).forEach((token) => {
+      if (!token) {
+        return;
+      }
+
+      if (/^\s+$/.test(token)) {
+        fragment.appendChild(document.createTextNode(token));
+        return;
+      }
+
+      const word = document.createElement("span");
+      word.className = "text-reveal-word";
+      word.setAttribute("aria-hidden", "true");
+
+      if (mode === "letter") {
+        Array.from(token).forEach((character) => {
+          const letter = document.createElement("span");
+          letter.className = "text-reveal-letter";
+          letter.textContent = character;
+          word.appendChild(letter);
+        });
+      } else {
+        word.textContent = token;
+      }
+
+      fragment.appendChild(word);
+    });
+  });
+
+  element.textContent = "";
+  const readerText = document.createElement("span");
+  readerText.className = "text-reveal-reader";
+  readerText.textContent = originalText;
+  element.appendChild(fragment);
+  element.appendChild(readerText);
+  element.dataset.textRevealReady = "true";
+
+  const targets = mode === "letter"
+    ? element.querySelectorAll(".text-reveal-letter")
+    : element.querySelectorAll(".text-reveal-word");
+
+  gsap.fromTo(
+    targets,
+    {
+      autoAlpha: 0,
+      yPercent: mode === "letter" ? 105 : 110,
+      rotateX: mode === "letter" ? -28 : 0,
+    },
+    {
+      autoAlpha: 1,
+      yPercent: 0,
+      rotateX: 0,
+      duration: mode === "letter" ? 0.5 : 0.62,
+      ease: "power3.out",
+      stagger: {
+        each: mode === "letter" ? 0.01 : 0.035,
+        from: "start",
+      },
+      scrollTrigger: {
+        trigger: element,
+        start: "top 88%",
+        toggleActions: "play none none none",
+      },
+      onComplete: () => {
+        gsap.set(targets, { clearProps: "transform,opacity,visibility" });
+      },
+    },
+  );
 }
 
 function revealCurrentViewport(gsap) {
@@ -337,85 +555,6 @@ function initButtonEffects(gsap) {
   });
 }
 
-function initProjectVideos() {
-  const videos = document.querySelectorAll(".project-media video");
-
-  videos.forEach((video) => {
-    const card = video.closest(".work-card");
-    const source = video.querySelector("source");
-
-    video.autoplay = false;
-    video.muted = true;
-    video.loop = true;
-    video.playsInline = true;
-    video.preload = "none";
-    video.disableRemotePlayback = true;
-    video.removeAttribute("autoplay");
-    video.setAttribute("disablepictureinpicture", "");
-    video.setAttribute("playsinline", "");
-
-    video.addEventListener("error", () => {
-      video.hidden = true;
-      card?.classList.remove("has-project-video", "is-video-playing");
-    });
-
-    if (!source || !source.getAttribute("src")) {
-      video.hidden = true;
-      return;
-    }
-
-    card?.classList.add("has-project-video");
-
-    video.addEventListener("loadeddata", () => {
-      if (video.currentTime < 0.01) {
-        video.currentTime = 0.01;
-      }
-    }, { once: true });
-
-    video.addEventListener("playing", () => {
-      card?.classList.add("is-video-playing");
-    });
-
-    video.addEventListener("pause", () => {
-      card?.classList.remove("is-video-playing");
-    });
-
-    card?.addEventListener("pointerenter", () => {
-      playProjectVideo(video);
-    });
-
-    card?.addEventListener("pointerleave", () => {
-      pauseProjectVideo(video, "metadata");
-    });
-  });
-}
-
-function playProjectVideo(video) {
-  if (!video || video.hidden) {
-    return;
-  }
-
-  video.preload = "auto";
-
-  if (video.readyState === 0) {
-    video.load();
-  }
-
-  video.playbackRate = 1;
-  video.play().catch(() => {
-    video.closest(".work-card")?.classList.remove("is-video-playing");
-  });
-}
-
-function pauseProjectVideo(video, preload = "none") {
-  if (!video || video.hidden) {
-    return;
-  }
-
-  video.pause();
-  video.preload = preload;
-}
-
 function initProjectShowcase(gsap) {
   const showcase = document.querySelector(".work-showcase");
   const cards = Array.from(document.querySelectorAll("[data-project-slide]"));
@@ -451,33 +590,15 @@ function initProjectShowcase(gsap) {
   }
 
   function updateVideos() {
-    const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-
     cards.forEach((card, index) => {
-      const video = card.querySelector("video");
-
       card.classList.toggle("is-active", index === activeIndex);
       card.setAttribute("aria-hidden", index === activeIndex ? "false" : "true");
-
-      if (!video || video.hidden) {
-        return;
-      }
-
-      if (index === activeIndex) {
-        video.preload = canHover ? "metadata" : "auto";
-
-        if (!canHover) {
-          playProjectVideo(video);
-        }
-      } else {
-        pauseProjectVideo(video);
-      }
     });
   }
 
   function layoutCards(animate = true) {
     const isMobile = window.innerWidth <= 820;
-    const gap = isMobile ? 245 : 430;
+    const gap = isMobile ? 245 : 540;
 
     cards.forEach((card, index) => {
       const offset = signedOffset(index);
@@ -486,12 +607,10 @@ function initProjectShowcase(gsap) {
         xPercent: -50,
         x: offset * gap,
         y: isActive ? 0 : isMobile ? 18 : 34,
-        scale: isActive ? 1 : isMobile ? 0.78 : 0.74,
-        rotationY: isActive ? 0 : offset > 0 ? -7 : 7,
-        opacity: Math.abs(offset) > 1 ? 0 : isActive ? 1 : 0.48,
-        filter: isActive ? "blur(0px)" : "blur(0.2px)",
+        scale: isActive ? 1 : isMobile ? 0.78 : 0.68,
+        opacity: Math.abs(offset) > 1 ? 0 : isActive ? 1 : 0.36,
         zIndex: isActive ? 6 : 3 - Math.abs(offset),
-        duration: animate ? 0.82 : 0,
+        duration: animate ? 0.62 : 0,
         ease: "power3.inOut",
         overwrite: "auto",
       };
@@ -501,7 +620,7 @@ function initProjectShowcase(gsap) {
       } else {
         card.style.zIndex = String(target.zIndex);
         card.style.opacity = String(target.opacity);
-        card.style.transform = `translate3d(calc(-50% + ${target.x}px), ${target.y}px, 0) scale(${target.scale}) rotateY(${target.rotationY}deg)`;
+        card.style.transform = `translate3d(calc(-50% + ${target.x}px), ${target.y}px, 0) scale(${target.scale})`;
       }
     });
 
@@ -519,7 +638,7 @@ function initProjectShowcase(gsap) {
       }
     }
 
-    if (gsap) {
+    if (gsap && animate) {
       const activeContent = cards[activeIndex].querySelectorAll(".work-number, h3, p, .project-actions");
       gsap.fromTo(activeContent, {
         y: 22,
@@ -527,7 +646,7 @@ function initProjectShowcase(gsap) {
       }, {
         y: 0,
         autoAlpha: 1,
-        duration: 0.62,
+        duration: 0.46,
         ease: "power3.out",
         stagger: 0.055,
         overwrite: "auto",
@@ -570,7 +689,17 @@ function initProjectShowcase(gsap) {
       }
     }, { passive: true });
 
-    window.addEventListener("resize", () => layoutCards(false));
+    let resizeFrame = 0;
+    window.addEventListener("resize", () => {
+      if (resizeFrame) {
+        return;
+      }
+
+      resizeFrame = requestAnimationFrame(() => {
+        resizeFrame = 0;
+        layoutCards(false);
+      });
+    });
     showcase.dataset.projectShowcaseReady = "true";
   }
 
@@ -579,7 +708,7 @@ function initProjectShowcase(gsap) {
 
 function initTechCards(gsap) {
   document.querySelectorAll(".tech-card").forEach((card) => {
-    const icon = card.querySelector("img");
+    const icon = card.querySelector("img, .tech-monogram");
     const title = card.querySelector("h3");
     const canTilt = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
@@ -660,310 +789,6 @@ function initTechCards(gsap) {
   });
 }
 
-function initResumeScene(THREE, gsap) {
-  const canvas = document.querySelector("#resume-scene");
-  const visual = document.querySelector(".resume-visual");
-
-  if (!canvas || !visual) {
-    return;
-  }
-
-  const scene = new THREE.Scene();
-  const renderer = new THREE.WebGLRenderer({
-    canvas,
-    alpha: true,
-    antialias: true,
-    powerPreference: "high-performance",
-  });
-  const camera = new THREE.PerspectiveCamera(39, 1, 0.1, 100);
-  const laptop = new THREE.Group();
-  const floatingCards = new THREE.Group();
-  const sparks = new THREE.Group();
-  const rotationState = {
-    targetY: -0.34,
-    currentY: -0.34,
-    targetX: -0.08,
-    currentX: -0.08,
-    dragging: false,
-    lastX: 0,
-    lastY: 0,
-  };
-  const darkMaterial = new THREE.MeshStandardMaterial({
-    color: 0x0b0d12,
-    roughness: 0.52,
-    metalness: 0.42,
-  });
-  const edgeMaterial = new THREE.MeshStandardMaterial({
-    color: 0xf7f7f2,
-    roughness: 0.24,
-    metalness: 0.72,
-    transparent: true,
-    opacity: 0.16,
-  });
-  const monitorVideo = document.createElement("video");
-  monitorVideo.src = "assets/videos/resume-monitor.mp4";
-  monitorVideo.muted = true;
-  monitorVideo.loop = true;
-  monitorVideo.playsInline = true;
-  monitorVideo.preload = "metadata";
-  monitorVideo.setAttribute("playsinline", "");
-  monitorVideo.setAttribute("muted", "");
-
-  const monitorTexture = new THREE.VideoTexture(monitorVideo);
-  monitorTexture.minFilter = THREE.LinearFilter;
-  monitorTexture.magFilter = THREE.LinearFilter;
-  monitorTexture.generateMipmaps = false;
-
-  if ("colorSpace" in monitorTexture && THREE.SRGBColorSpace) {
-    monitorTexture.colorSpace = THREE.SRGBColorSpace;
-  }
-
-  const videoScreenMaterial = new THREE.MeshBasicMaterial({
-    map: monitorTexture,
-    transparent: true,
-    opacity: 0.96,
-  });
-  const glowMaterial = new THREE.MeshBasicMaterial({
-    color: 0xffffff,
-    transparent: true,
-    opacity: 0.04,
-    side: THREE.DoubleSide,
-  });
-
-  scene.add(new THREE.AmbientLight(0xffffff, 0.48));
-
-  const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
-  keyLight.position.set(2.8, 3.8, 4.2);
-  scene.add(keyLight);
-
-  const goldLight = new THREE.PointLight(0xf4c84f, 2.6, 6);
-  goldLight.position.set(-1.2, 0.8, 2.4);
-  scene.add(goldLight);
-
-  const blueLight = new THREE.PointLight(0x7b8cff, 1.7, 5);
-  blueLight.position.set(1.8, 1.7, 1.7);
-  scene.add(blueLight);
-
-  const base = new THREE.Mesh(new THREE.BoxGeometry(3.25, 0.12, 2.05), darkMaterial);
-  base.position.set(0, -0.8, 0.26);
-  base.rotation.x = -0.18;
-  laptop.add(base);
-
-  const trackpad = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.012, 0.5), edgeMaterial);
-  trackpad.position.set(0, -0.72, 0.78);
-  trackpad.rotation.x = -0.18;
-  laptop.add(trackpad);
-
-  for (let row = 0; row < 4; row += 1) {
-    for (let col = 0; col < 10; col += 1) {
-      const key = new THREE.Mesh(
-        new THREE.BoxGeometry(0.18, 0.018, 0.095),
-        row === 1 && col > 5 ? edgeMaterial : darkMaterial,
-      );
-      key.position.set(-0.9 + col * 0.2, -0.68, -0.25 + row * 0.16);
-      key.rotation.x = -0.18;
-      laptop.add(key);
-    }
-  }
-
-  const screenBack = new THREE.Mesh(new THREE.BoxGeometry(3.05, 1.8, 0.08), darkMaterial);
-  screenBack.position.set(0, 0.32, -0.78);
-  screenBack.rotation.x = -0.18;
-  laptop.add(screenBack);
-
-  const screen = new THREE.Mesh(new THREE.PlaneGeometry(2.68, 1.43), videoScreenMaterial);
-  screen.position.set(0, 0.34, -0.72);
-  screen.rotation.x = -0.18;
-  laptop.add(screen);
-
-  const screenGlow = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 1.62), glowMaterial);
-  screenGlow.position.set(0, 0.34, -0.695);
-  screenGlow.rotation.x = -0.18;
-  laptop.add(screenGlow);
-
-  const hinge = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 2.55, 24), edgeMaterial);
-  hinge.position.set(0, -0.48, -0.55);
-  hinge.rotation.z = Math.PI / 2;
-  laptop.add(hinge);
-
-  [
-    { x: -1.7, y: 0.95, z: 0.1, color: 0xf4c84f },
-    { x: 1.45, y: 1.15, z: -0.05, color: 0x7b8cff },
-    { x: 1.8, y: -0.02, z: 0.46, color: 0x7ef2c0 },
-  ].forEach((cardData) => {
-    const card = new THREE.Group();
-    const cardMaterial = new THREE.MeshBasicMaterial({
-      color: cardData.color,
-      transparent: true,
-      opacity: 0.14,
-      side: THREE.DoubleSide,
-    });
-    const cardEdge = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.18,
-    });
-    const panel = new THREE.Mesh(new THREE.PlaneGeometry(0.74, 0.38), cardMaterial);
-    const marker = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.028, 0.01), cardEdge);
-    marker.position.set(-0.12, 0.02, 0.01);
-    card.add(panel, marker);
-    card.position.set(cardData.x, cardData.y, cardData.z);
-    card.rotation.y = cardData.x < 0 ? 0.42 : -0.38;
-    card.rotation.x = -0.08;
-    floatingCards.add(card);
-  });
-
-  laptop.add(floatingCards);
-
-  const sparkMaterial = new THREE.PointsMaterial({
-    color: 0xf4c84f,
-    size: 0.026,
-    transparent: true,
-    opacity: 0.72,
-    depthWrite: false,
-  });
-  const sparkPositions = [];
-  const sparkCount = window.innerWidth < 768 ? 90 : 150;
-
-  for (let index = 0; index < sparkCount; index += 1) {
-    sparkPositions.push(
-      (Math.random() - 0.5) * 4.6,
-      (Math.random() - 0.5) * 3.1 + 0.25,
-      (Math.random() - 0.5) * 2.1,
-    );
-  }
-
-  const sparkGeometry = new THREE.BufferGeometry();
-  sparkGeometry.setAttribute("position", new THREE.Float32BufferAttribute(sparkPositions, 3));
-  sparks.add(new THREE.Points(sparkGeometry, sparkMaterial));
-  laptop.add(sparks);
-
-  const orbit = new THREE.Mesh(
-    new THREE.TorusGeometry(1.95, 0.006, 8, 128),
-    new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.1,
-    }),
-  );
-  orbit.rotation.x = Math.PI / 2.7;
-  orbit.rotation.y = -0.16;
-  laptop.add(orbit);
-
-  laptop.rotation.set(rotationState.currentX, rotationState.currentY, 0.02);
-  laptop.position.y = -0.05;
-  scene.add(laptop);
-  camera.position.set(0, 0.22, 4.55);
-
-  visual.addEventListener("pointerdown", (event) => {
-    monitorVideo.play().catch(() => {});
-    rotationState.dragging = true;
-    rotationState.lastX = event.clientX;
-    rotationState.lastY = event.clientY;
-    visual.setPointerCapture(event.pointerId);
-  });
-
-  visual.addEventListener("pointermove", (event) => {
-    if (!rotationState.dragging) {
-      return;
-    }
-
-    const deltaX = event.clientX - rotationState.lastX;
-    const deltaY = event.clientY - rotationState.lastY;
-    rotationState.lastX = event.clientX;
-    rotationState.lastY = event.clientY;
-    rotationState.targetY += deltaX * 0.012;
-    rotationState.targetX = Math.max(-0.82, Math.min(0.42, rotationState.targetX + deltaY * 0.008));
-  });
-
-  visual.addEventListener("pointerup", (event) => {
-    rotationState.dragging = false;
-    visual.releasePointerCapture(event.pointerId);
-  });
-
-  visual.addEventListener("pointercancel", () => {
-    rotationState.dragging = false;
-  });
-
-  visual.addEventListener("dblclick", () => {
-    rotationState.targetY = -0.34;
-    rotationState.targetX = -0.08;
-  });
-
-  function resize() {
-    const rect = visual.getBoundingClientRect();
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 768 ? 1.1 : 1.45));
-    renderer.setSize(rect.width, rect.height, false);
-    camera.aspect = rect.width / rect.height;
-    camera.updateProjectionMatrix();
-    laptop.scale.setScalar(rect.width < 420 ? 1.02 : 1.2);
-  }
-
-  function animate(time) {
-    if (!pageVisible) {
-      requestAnimationFrame(animate);
-      return;
-    }
-
-    const elapsed = time * 0.001;
-    if (!rotationState.dragging) {
-      rotationState.targetY += Math.sin(elapsed * 0.45) * 0.0007;
-    }
-
-    rotationState.currentY += (rotationState.targetY - rotationState.currentY) * 0.12;
-    rotationState.currentX += (rotationState.targetX - rotationState.currentX) * 0.12;
-    laptop.rotation.y = rotationState.currentY + (rotationState.dragging ? 0 : (cursor.x - 0.5) * 0.035);
-    laptop.rotation.x = rotationState.currentX + Math.sin(elapsed * 0.72) * 0.018 + (rotationState.dragging ? 0 : (0.5 - cursor.y) * 0.02);
-    laptop.position.y = -0.05 + Math.sin(elapsed * 0.9) * 0.035;
-    floatingCards.children.forEach((card, index) => {
-      card.position.y += Math.sin(elapsed * 1.2 + index) * 0.0008;
-      card.rotation.z = Math.sin(elapsed * 0.9 + index) * 0.035;
-    });
-    sparks.rotation.y = elapsed * 0.08;
-    orbit.rotation.z = elapsed * 0.18;
-    screenGlow.material.opacity = 0.035 + Math.sin(elapsed * 1.6) * 0.012;
-    sparkMaterial.opacity = 0.48 + Math.sin(elapsed * 1.2) * 0.16;
-
-    renderer.render(scene, camera);
-    requestAnimationFrame(animate);
-  }
-
-  resize();
-  window.addEventListener("resize", resize);
-  requestAnimationFrame(animate);
-  monitorVideo.play().catch(() => {});
-
-  gsap.fromTo(laptop.scale, {
-    x: 0.98,
-    y: 0.98,
-    z: 0.98,
-  }, {
-    x: 1.2,
-    y: 1.2,
-    z: 1.2,
-    duration: 1.2,
-    ease: "power3.out",
-  });
-
-  gsap.to(floatingCards.children.map((card) => card.position), {
-    y: "+=0.12",
-    duration: 2.8,
-    ease: "sine.inOut",
-    repeat: -1,
-    yoyo: true,
-    stagger: 0.18,
-  });
-
-  gsap.to(".resume-visual-label span", {
-    y: -4,
-    duration: 1.9,
-    ease: "sine.inOut",
-    repeat: -1,
-    yoyo: true,
-    stagger: 0.2,
-  });
-}
-
 function initThree(THREE) {
   const canvas = document.querySelector("#scene");
   const scene = new THREE.Scene();
@@ -974,7 +799,7 @@ function initThree(THREE) {
     powerPreference: "low-power",
   });
 
-  const maxPixelRatio = window.innerWidth < 768 ? 0.85 : 1.1;
+  const maxPixelRatio = window.innerWidth < 768 ? 0.75 : 1;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
 
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -1015,10 +840,10 @@ function initThree(THREE) {
         float hotSpot = smoothstep(0.08, 0.0, distanceToCursor);
         vec3 coolShadow = vec3(0.10, 0.12, 0.20);
         vec3 softGold = vec3(1.0, 0.82, 0.30);
-        vec3 pearl = vec3(1.0, 0.98, 0.88);
+        vec3 pearl = vec3(1.0, 0.84, 0.42);
         vec3 color = mix(coolShadow, softGold, core * 0.42);
-        color = mix(color, pearl, hotSpot * 0.35);
-        float alpha = shadow * 0.48 + core * 0.2 + hotSpot * 0.16;
+        color = mix(color, pearl, hotSpot * 0.18);
+        float alpha = shadow * 0.34 + core * 0.14 + hotSpot * 0.07;
 
         gl_FragColor = vec4(color, alpha);
       }
@@ -1063,7 +888,6 @@ function initCssFallback() {
 }
 
 initMobileNav();
-initProjectVideos();
 initProjectShowcase();
 initContactForm();
 loadMotion();
